@@ -1,0 +1,133 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+#app {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--sky-bottom);
+}
+
+/* =========================
+   CIELO
+========================= */
+
+.sky {
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        to bottom,
+        var(--sky-top),
+        var(--sky-bottom)
+    );
+}
+
+
+/* =========================
+   MONTAÑAS LEJANAS
+========================= */
+
+.mountains-far {
+    position: absolute;
+    left: -5%;
+    bottom: 25%;
+
+    width: 110%;
+    height: 35%;
+
+    background: var(--mountain-far);
+
+    clip-path: polygon(
+        0% 70%,
+        10% 55%,
+        18% 65%,
+        28% 35%,
+        38% 60%,
+        48% 42%,
+        58% 65%,
+        68% 30%,
+        78% 58%,
+        88% 40%,
+        100% 65%,
+        100% 100%,
+        0% 100%
+    );
+}
+
+
+/* =========================
+   MONTAÑAS CERCANAS
+========================= */
+
+.mountains-near {
+    position: absolute;
+    left: -5%;
+    bottom: 12%;
+
+    width: 110%;
+    height: 38%;
+
+    background: var(--mountain-near);
+
+    clip-path: polygon(
+        0% 75%,
+        12% 50%,
+        22% 68%,
+        35% 28%,
+        46% 65%,
+        57% 40%,
+        68% 70%,
+        80% 32%,
+        90% 58%,
+        100% 42%,
+        100% 100%,
+        0% 100%
+    );
+}
+
+
+/* =========================
+   TIERRA
+========================= */
+
+.ground {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 15%;
+
+    background: var(--ground);
+}
+
+.tree {
+    position: absolute;
+
+    left: 0;
+    bottom: 100%;
+
+    width: 0;
+    height: 0;
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: var(--tree-height) solid var(--tree);
+
+    transform: translateX(-50%);
+}
