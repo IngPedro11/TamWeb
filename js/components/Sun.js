@@ -1,20 +1,22 @@
 export default class Sun {
-    constructor(container) {
-        this.container = container;
+constructor(container) {
+    console.log("☀️ SUN: constructor");
 
-        this.element = document.createElement("div");
-        this.element.className = "sun";
+    this.container = container;
 
-        this.container.appendChild(this.element);
+    this.element = document.createElement("div");
+    this.element.className = "sun";
 
-        this.progress = 0.5;
-        this.onMove = null;
+    this.container.appendChild(this.element);
 
-        this.isDragging = false;
+    this.progress = 0.5;
+    this.onMove = null;
 
-        this.setupEvents();
-        this.updatePosition();
-    }
+    this.isDragging = false;
+
+    this.setupEvents();
+    this.updatePosition();
+}
 
     setupEvents() {
         this.element.addEventListener(
@@ -34,6 +36,8 @@ export default class Sun {
     }
 
     handlePointerDown = (event) => {
+        console.log("☀️ SUN: pointerdown");
+
         event.preventDefault();
 
         this.isDragging = true;
