@@ -6,6 +6,8 @@ export default class CameraButton {
 
         this.onCapture = null;
 
+        this.messageTimer = null;
+
         this.create();
     }
 
@@ -25,9 +27,12 @@ export default class CameraButton {
 
             <div class="camera-frame"></div>
 
+            <div class="camera-message"></div>
+
             <button
                 class="camera-shutter"
                 aria-label="Tomar una foto"
+                type="button"
             >
                 <span></span>
             </button>
@@ -43,6 +48,11 @@ export default class CameraButton {
                 ".camera-shutter"
             );
 
+        this.message =
+            this.element.querySelector(
+                ".camera-message"
+            );
+
         this.button.addEventListener(
             "click",
             this.handleCapture
@@ -56,7 +66,69 @@ export default class CameraButton {
         }
     };
 
+    flash(type = "white") {
+
+        const flash =
+            document.createElement("div");
+
+        flash.className =
+            `camera-flash ${type}`;
+
+        this.element.appendChild(
+            flash
+        );
+
+        requestAnimationFrame(() => {
+
+            flash.classList.add(
+                "active"
+            );
+
+        });
+
+        setTimeout(() => {
+
+            flash.remove();
+
+        }, 450);
+    }
+
+    showMessage(text) {
+
+        clearTimeout(
+            this.messageTimer
+        );
+
+        this.message.textContent =
+            text;
+
+        this.message.classList.remove(
+            "show"
+        );
+
+        requestAnimationFrame(() => {
+
+            this.message.classList.add(
+                "show"
+            );
+
+        });
+
+        this.messageTimer =
+            setTimeout(() => {
+
+                this.message.classList.remove(
+                    "show"
+                );
+
+            }, 2800);
+    }
+
     destroy() {
+
+        clearTimeout(
+            this.messageTimer
+        );
 
         this.button?.removeEventListener(
             "click",
@@ -66,3 +138,4 @@ export default class CameraButton {
         this.element?.remove();
     }
 }
+

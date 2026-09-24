@@ -1,6 +1,7 @@
+
 import Sun from "../components/Sun.js";
 import CameraButton from "../components/CameraButton.js";
-
+import FlowerScene from "./FlowerScene.js";
 export default class SunsetScene {
 
     constructor(sceneManager) {
@@ -12,6 +13,9 @@ export default class SunsetScene {
         this.sun = null;
 
         this.stars = null;
+        this.camera = null;
+
+        this.wrongAttempts = 0;
     }
 
 
@@ -34,7 +38,7 @@ export default class SunsetScene {
     ======================================== */
 
 
-    createCamera() {
+createCamera() {
 
     this.camera =
         new CameraButton(
@@ -44,12 +48,249 @@ export default class SunsetScene {
     this.camera.onCapture =
         () => {
 
-            console.log(
-                "📸 Foto!"
-            );
+            const progress =
+                this.sun.progress;
 
+            /*
+             * Zona correcta:
+             *
+             * 0.45 ───────── 0.70
+             *
+             * Aquí consideramos que
+             * encontró el momento correcto.
+             */
+
+            if (
+                progress >= 0.43 &&
+                progress <= 0.63
+            ) {
+
+                this.correctPhoto();
+
+            } else {
+
+                this.wrongPhoto();
+            }
         };
 }
+
+
+correctPhoto() {
+
+    /*
+     * Evitamos que pueda pulsar el botón
+     * varias veces durante la transición.
+     */
+
+    if (this.isTransitioning) {
+        return;
+    }
+
+    this.isTransitioning = true;
+
+    /*
+     * 1. Sonido de cámara
+     */
+
+    this.playCameraSound();
+
+    /*
+     * 2. Flash blanco
+     */
+
+    this.camera.flash("white");
+
+    /*
+     * 3. Pequeño mensaje
+     */
+
+    this.camera.showMessage(
+        "📸 ¡Perfecto!"
+    );
+
+    /*
+     * 4. Esperamos un poquito para
+     * que se sienta como una fotografía.
+     */
+
+    setTimeout(() => {
+
+        this.transitionToNextScene();
+
+    }, 550);
+}
+
+
+playCameraSound() {
+
+    const audio =
+        new Audio(
+            "./assets/audio/camera.mp3"
+        );
+
+    audio.volume = 0.7;
+
+    audio.currentTime = 0;
+
+    audio.play().catch(() => {
+
+        /*
+         * Algunos navegadores pueden
+         * bloquear el audio.
+         *
+         * No hacemos nada si ocurre.
+         */
+
+    });
+}
+
+
+transitionToNextScene() {
+
+    /*
+     * Creamos una capa blanca que
+     * cubre progresivamente la pantalla.
+     */
+
+    const transition =
+        document.createElement("div");
+
+    transition.className =
+        "scene-transition";
+
+    this.container.appendChild(
+        transition
+    );
+
+    requestAnimationFrame(() => {
+
+        transition.classList.add(
+            "active"
+        );
+
+    });
+
+    /*
+     * Cuando la pantalla ya está
+     * completamente blanca,
+     * cambiamos de escena.
+     */
+
+    setTimeout(() => {
+
+        this.sceneManager.changeTo(
+            new FlowerScene(
+                this.sceneManager
+            )
+        );
+
+    }, 700);
+}
+
+
+
+wrongPhoto() {
+
+    this.wrongAttempts++;
+
+    /*
+     * Flash rojo.
+     */
+
+    this.camera.flash(
+        "red"
+    );
+
+    let message;
+
+
+    /*
+     * PRIMER INTENTO
+     */
+
+    if (
+        this.wrongAttempts === 1
+    ) {
+
+        message =
+            "hmm asi no 😌 intenta mover el sol";
+
+
+    /*
+     * INTENTOS 2-3
+     */
+
+    } else if (
+        this.wrongAttempts <= 3
+    ) {
+        message =
+            "Hey ya 😂 consejo: arrastra hasta donde mas te guste";
+
+
+
+    /*
+     * INTENTOS 4-5
+     */
+
+    } else if (
+        this.wrongAttempts <= 5
+    ) {
+
+        message =
+            "Así noooo 😩 tú no eres ella";
+
+
+    /*
+     * INTENTOS 6-8
+     */
+
+    } else if (
+        this.wrongAttempts <= 8
+    ) {
+
+        message =
+            "Bueno... ¿y cuál es la wachafita? 😭";
+
+
+    /*
+     * INTENTO 9
+     */
+
+    } else if (
+        this.wrongAttempts === 9
+    ) {
+
+        message =
+            "Creo que el sol te está intentando decir algo... 🌅";
+
+
+    /*
+     * 10 O MÁS
+     */
+
+    } else if  (this.wrongAttempts === 10) {
+
+        message =
+            "JAJAJA ya van 10, 10 veces gafa";
+    }
+    else if  (this.wrongAttempts > 10 && this.wrongAttempts <= 15) {
+
+            message =
+                "Te mereces un coquito";
+    }
+    else if  (this.wrongAttempts > 15) {
+
+            message =
+                "el que se equivoque de nuevo es marico";
+    }
+
+
+    this.camera.showMessage(
+        message
+    );
+}
+
+
 
 
     /* ========================================
@@ -964,9 +1205,13 @@ updateSun(progress) {
        DESTROY
     ======================================== */
 
+
+
+    
     destroy() {
 
         this.sun?.destroy();
+
         this.camera?.destroy();
 
         this.container?.remove();

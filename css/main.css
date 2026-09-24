@@ -359,14 +359,13 @@ body {
 
     color: white;
 
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
 
     letter-spacing: 0.2px;
 
-    text-shadow:
-        0 2px 10px
-        rgba(0, 0, 0, 0.45);
+    text-shadow:0 0 20px #fff;
+    font-family:'Times new roman';
 
     white-space: nowrap;
 }
@@ -374,16 +373,16 @@ body {
 .camera-frame {
     position: absolute;
 
-    top: 5%;
-    left: 5%;
-    right: 5%;
-    bottom: 5%;
+    top: 2.5%;
+    left: 2.5%;
+    right: 2.5%;
+    bottom: 2.5%;
 
     border:
         1px solid
         rgba(255, 255, 255, 0.45);
 
-    border-radius: 24px;
+    border-radius: 20px;
 
     pointer-events: none;
 }
@@ -396,8 +395,8 @@ body {
 
     transform: translateX(-50%);
 
-    width: 76px;
-    height: 76px;
+    width: 66px;
+    height: 66px;
 
     padding: 0;
 
@@ -427,8 +426,8 @@ body {
 }
 
 .camera-shutter span {
-    width: 62px;
-    height: 62px;
+    width: 52px;
+    height: 52px;
 
     border-radius: 50%;
 
@@ -444,4 +443,165 @@ body {
 
     background:
         rgba(255, 255, 255, 0.3);
+}
+.camera-message {
+    position: absolute;
+
+    left: 50%;
+    top: 15%;
+
+    transform:
+        translate(-50%, -10px);
+
+    width: max-content;
+    max-width: 82%;
+
+    padding: 11px 18px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(0, 0, 0, 0.55);
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    text-align: center;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+    backdrop-filter: blur(8px);
+
+    z-index: 30;
+}
+
+.camera-message.show {
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+}
+
+
+/* ========================================
+   FLASH DE CÁMARA
+   ======================================== */
+
+.camera-flash {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 50;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.12s ease;
+}
+
+.camera-flash.white {
+    background:
+        white;
+}
+
+.camera-flash.red {
+    background:
+        rgba(255, 40, 40, 0.75);
+}
+
+.camera-flash.active {
+    opacity: 1;
+}
+
+.scene-transition {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    background: white;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.65s ease;
+}
+
+.scene-transition.active {
+    opacity: 1;
+}
+
+
+/* ========================================
+   PLACEHOLDER FLOR
+   ======================================== */
+
+.flower-scene {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        #fff8f5;
+
+    overflow: hidden;
+}
+
+.flower-placeholder {
+    text-align: center;
+
+    color: #513b42;
+
+    animation:
+        flowerAppear 1s ease forwards;
+}
+
+.flower-emoji {
+    font-size: 80px;
+
+    margin-bottom: 20px;
+}
+
+.flower-text {
+    font-size: 18px;
+
+    letter-spacing: 0.3px;
+}
+
+
+@keyframes flowerAppear {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(20px)
+            scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
 }
