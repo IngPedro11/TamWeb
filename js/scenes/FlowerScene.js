@@ -8,7 +8,6 @@ export default class FlowerScene {
         this.container = null;
     }
 
-
     start() {
 
         this.container =
@@ -18,16 +17,18 @@ export default class FlowerScene {
             "flower-scene";
 
         this.container.innerHTML = `
-
             <div class="flower-placeholder">
 
-                <img src="../assets/images/cat.webp"></img>
+                <img
+                    src="./assets/images/cat.webp"
+                    alt="Un gatito"
+                    class="flower-cat"
+                >
 
                 <div class="flower-text">
                 </div>
 
             </div>
-
         `;
 
         document
@@ -37,16 +38,12 @@ export default class FlowerScene {
             );
     }
 
-
     update() {
         // Aquí construiremos
         // la animación de la flor.
     }
 
-
     destroy() {
-
         this.container?.remove();
     }
 }
-
