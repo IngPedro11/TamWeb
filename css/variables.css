@@ -1,15 +1,10 @@
 :root {
-    /* Cielo */
     --sky-top: #65c9ff;
     --sky-bottom: #dff6ff;
 
-    /* Montañas */
     --mountain-far: #79a982;
     --mountain-near: #426b4b;
 
-    /* Tierra */
-    --ground: #294632;
-
-    /* Árboles */
+    --ground: #193526;
     --tree: #193526;
 }

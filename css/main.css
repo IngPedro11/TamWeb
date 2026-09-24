@@ -45,30 +45,48 @@ body {
 .mountains-far {
     position: absolute;
     left: -5%;
-    bottom: 25%;
-
+    bottom: 20%;
     width: 110%;
-    height: 35%;
-
+    height: 40%;
     background: var(--mountain-far);
 
     clip-path: polygon(
-        0% 70%,
-        10% 55%,
-        18% 65%,
-        28% 35%,
-        38% 60%,
-        48% 42%,
-        58% 65%,
-        68% 30%,
-        78% 58%,
-        88% 40%,
-        100% 65%,
+        /* izquierda */
+        0% 42%,
+  
+        14% 68%,
+        20% 47%,
+
+        27% 60%,
+
+        /* montaña izquierda central */
+
+        40% 30%,
+
+
+
+        /* espacio donde aparecerá el sol */
+        50% 50%,
+
+        /* montaña derecha central */
+
+
+        58% 18%,
+
+
+        /* montañas derecha */
+        68% 45%,
+        75% 33%,
+
+        86% 57%,
+
+        100% 25%,
+
+        /* base */
         100% 100%,
         0% 100%
     );
 }
-
 
 /* =========================
    MONTAÑAS CERCANAS
@@ -88,7 +106,7 @@ body {
         0% 75%,
         12% 50%,
         22% 68%,
-        35% 28%,
+        35% 38%,
         46% 65%,
         57% 40%,
         68% 70%,
@@ -130,4 +148,46 @@ body {
     border-bottom: var(--tree-height) solid var(--tree);
 
     transform: translateX(-50%);
+}
+
+.sunset-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sun {
+    position: absolute;
+
+    width: 64px;
+    height: 64px;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background: #ffd86b;
+
+    z-index: 2;
+
+    touch-action: none;
+
+    cursor: grab;
+}
+
+.sun {
+    z-index: 2;
+}
+
+.mountains-far {
+    z-index: 3;
+}
+
+.mountains-near {
+    z-index: 4;
+}
+
+.ground {
+    z-index: 5;
 }
