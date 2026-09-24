@@ -9,7 +9,7 @@ constructor(container) {
 
     this.container.appendChild(this.element);
 
-    this.progress = 0.5;
+    this.progress = 0.01;
     this.onMove = null;
 
     this.isDragging = false;

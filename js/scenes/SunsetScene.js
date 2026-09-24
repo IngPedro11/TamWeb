@@ -1,25 +1,60 @@
 import Sun from "../components/Sun.js";
+import CameraButton from "../components/CameraButton.js";
 
 export default class SunsetScene {
 
     constructor(sceneManager) {
+
         this.sceneManager = sceneManager;
 
         this.container = null;
+
         this.sun = null;
+
         this.stars = null;
     }
 
 
+    /* ========================================
+       START
+    ======================================== */
+
     start() {
+
         this.createLandscape();
         this.createTrees();
         this.createStars();
         this.createSun();
+        this.createCamera();
 
-        this.updateEnvironment(0.5);
+        this.updateEnvironment(0.01);
     }
+    /* ========================================
+       Camera
+    ======================================== */
 
+
+    createCamera() {
+
+    this.camera =
+        new CameraButton(
+            this.container
+        );
+
+    this.camera.onCapture =
+        () => {
+
+            console.log(
+                "📸 Foto!"
+            );
+
+        };
+}
+
+
+    /* ========================================
+       LANDSCAPE
+    ======================================== */
 
     createLandscape() {
 
@@ -29,8 +64,12 @@ export default class SunsetScene {
         this.container.className =
             "sunset-scene";
 
+
         this.container.innerHTML = `
+
             <div class="sky"></div>
+
+            <div class="horizon-glow"></div>
 
             <div class="mountains-far"></div>
 
@@ -41,116 +80,227 @@ export default class SunsetScene {
             <div class="stars"></div>
         `;
 
+
         document
             .getElementById("app")
-            .appendChild(this.container);
+            .appendChild(
+                this.container
+            );
     }
 
+
+    /* ========================================
+       TREES
+    ======================================== */
 
     createTrees() {
 
         const ground =
-            this.container.querySelector(".ground");
+            this.container
+                .querySelector(".ground");
 
-        const treePositions = [
+
+        /*
+         * Más árboles hacia los lados.
+         *
+         * El centro queda más abierto
+         * para que el atardecer tenga
+         * espacio visual.
+         */
+
+        const positions = [
+
             2,
-            6,
-            11,
-            17,
+            5,
+            9,
+            14,
+            19,
             24,
+
             76,
-            83,
-            89,
-            94,
+            81,
+            86,
+            91,
+            95,
             98
         ];
 
-        treePositions.forEach((position) => {
 
-            const tree =
-                document.createElement("div");
+        positions.forEach(
+            (position, index) => {
 
-            tree.className = "tree";
+                const tree =
+                    document.createElement(
+                        "div"
+                    );
 
-            tree.style.left =
-                `${position}%`;
 
-            const distanceFromCenter =
-                Math.abs(position - 50);
+                tree.className =
+                    "tree";
 
-            const height =
-                25 +
-                distanceFromCenter * 0.8;
 
-            tree.style.setProperty(
-                "--tree-height",
-                `${height}px`
-            );
+                tree.style.left =
+                    `${position}%`;
 
-            ground.appendChild(tree);
-        });
+
+                /*
+                 * Distancia al centro.
+                 */
+
+                const distance =
+                    Math.abs(
+                        position - 50
+                    );
+
+
+                /*
+                 * Árboles más grandes
+                 * hacia los extremos.
+                 */
+
+                const height =
+                    35 +
+                    distance * 1.2;
+
+
+                const width =
+                    8 +
+                    distance * 0.12;
+
+
+                tree.style.setProperty(
+                    "--tree-height",
+                    `${height}px`
+                );
+
+
+                tree.style.setProperty(
+                    "--tree-width",
+                    `${width}px`
+                );
+
+
+                ground.appendChild(
+                    tree
+                );
+            }
+        );
     }
 
+
+    /* ========================================
+       ESTRELLAS
+    ======================================== */
 
     createStars() {
 
         this.stars =
-            this.container.querySelector(
-                ".stars"
-            );
+            this.container
+                .querySelector(".stars");
 
-        const numberOfStars = 80;
 
-        for (
-            let i = 0;
-            i < numberOfStars;
-            i++
-        ) {
+        /*
+         * Usamos posiciones
+         * pseudo-aleatorias pero
+         * determinadas.
+         */
 
-            const star =
-                document.createElement("div");
+        const stars = [
 
-            star.className = "star";
+            [8, 12],
+            [14, 23],
+            [20, 8],
+            [27, 18],
+            [33, 11],
+            [39, 25],
 
-            const x =
-                Math.random() * 100;
+            [46, 7],
+            [52, 18],
+            [58, 10],
+            [64, 24],
 
-            const y =
-                Math.random() * 55;
+            [71, 8],
+            [77, 17],
+            [83, 11],
+            [89, 25],
+            [95, 9],
 
-            const size =
-                Math.random() * 2 + 1;
+            [12, 34],
+            [25, 39],
+            [37, 33],
+            [49, 37],
+            [62, 34],
+            [74, 40],
+            [87, 35]
+        ];
 
-            star.style.left =
-                `${x}%`;
 
-            star.style.top =
-                `${y}%`;
+        stars.forEach(
+            ([x, y], index) => {
 
-            star.style.width =
-                `${size}px`;
+                const star =
+                    document.createElement(
+                        "div"
+                    );
 
-            star.style.height =
-                `${size}px`;
 
-            /*
-             * Algunas estrellas serán
-             * ligeramente más brillantes.
-             */
-            if (Math.random() > 0.8) {
-                star.style.boxShadow =
-                    "0 0 8px white";
+                star.className =
+                    "star";
+
+
+                star.style.left =
+                    `${x}%`;
+
+
+                star.style.top =
+                    `${y}%`;
+
+
+                const size =
+                    index % 5 === 0
+                        ? 3
+                        : 1.5;
+
+
+                star.style.width =
+                    `${size}px`;
+
+
+                star.style.height =
+                    `${size}px`;
+
+
+                star.style.setProperty(
+                    "--twinkle-duration",
+                    `${2 + (index % 4)}s`
+                );
+
+
+                star.style.setProperty(
+                    "--twinkle-delay",
+                    `${-(index % 5)}s`
+                );
+
+
+                this.stars.appendChild(
+                    star
+                );
             }
-
-            this.stars.appendChild(star);
-        }
+        );
     }
 
+
+    /* ========================================
+       SUN
+    ======================================== */
 
     createSun() {
 
         this.sun =
-            new Sun(this.container);
+            new Sun(
+                this.container
+            );
+
 
         this.sun.onMove =
             (progress) => {
@@ -162,112 +312,127 @@ export default class SunsetScene {
     }
 
 
+    /* ========================================
+       UPDATE GLOBAL
+    ======================================== */
+
     updateEnvironment(progress) {
 
-        this.updateSky(progress);
+        this.updateSky(
+            progress
+        );
 
-        this.updateMountains(progress);
+        this.updateHorizonGlow(
+            progress
+        );
 
-        this.updateGround(progress);
+        this.updateMountains(
+            progress
+        );
 
-        this.updateTrees(progress);
+        this.updateGround(
+            progress
+        );
 
-        this.updateStars(progress);
+        this.updateTrees(
+            progress
+        );
 
-        this.updateSun(progress);
+        this.updateStars(
+            progress
+        );
+
+        this.updateSun(
+            progress
+        );
     }
 
 
     /* ========================================
-       CIELO
+       SKY
     ======================================== */
 
     updateSky(progress) {
 
         const sky =
-            this.container.querySelector(
-                ".sky"
-            );
+            this.container
+                .querySelector(".sky");
 
-        if (!sky) return;
-
-
-        /*
-         * DÍA → ATARDECER
-         */
 
         if (progress <= 0.5) {
 
             const amount =
                 progress / 0.5;
 
+
             const top =
                 this.interpolateColor(
-                    "#5fc8ff",
-                    "#5c5bb7",
+                    "#58c7ff",
+                    "#5553aa",
                     amount
                 );
 
+
             const middle =
                 this.interpolateColor(
-                    "#8edcff",
-                    "#d56c9f",
+                    "#8bdcff",
+                    "#c76a9f",
                     amount
                 );
+
 
             const bottom =
                 this.interpolateColor(
                     "#dff7ff",
-                    "#ff9a55",
+                    "#ff9857",
                     amount
                 );
+
 
             sky.style.background = `
                 linear-gradient(
                     to bottom,
                     ${top} 0%,
-                    ${middle} 50%,
+                    ${middle} 48%,
                     ${bottom} 100%
                 )
             `;
 
-        }
-
-        /*
-         * ATARDECER → NOCHE
-         */
-
-        else {
+        } else {
 
             const amount =
                 (progress - 0.5) / 0.5;
 
+
             const top =
                 this.interpolateColor(
-                    "#5c5bb7",
-                    "#080b2a",
+                    "#5553aa",
+                    "#070a25",
                     amount
                 );
+
 
             const middle =
                 this.interpolateColor(
-                    "#d56c9f",
-                    "#121b45",
+                    "#c76a9f",
+                    "#111a40",
                     amount
                 );
 
+
             const bottom =
                 this.interpolateColor(
-                    "#ff9a55",
-                    "#273b70",
+                    "#ff9857",
+                    "#293d72",
                     amount
                 );
+
 
             sky.style.background = `
                 linear-gradient(
                     to bottom,
                     ${top} 0%,
-                    ${middle} 50%,
+                    ${middle} 48%,
                     ${bottom} 100%
                 )
             `;
@@ -276,37 +441,86 @@ export default class SunsetScene {
 
 
     /* ========================================
-       MONTAÑAS
+       HORIZON GLOW
+    ======================================== */
+
+    updateHorizonGlow(progress) {
+
+        const glow =
+            this.container
+                .querySelector(
+                    ".horizon-glow"
+                );
+
+
+        /*
+         * El glow aparece principalmente
+         * alrededor del atardecer.
+         */
+
+        const distance =
+            Math.abs(
+                progress - 0.5
+            );
+
+
+        let intensity =
+            1 - distance * 5;
+
+
+        intensity =
+            Math.max(
+                0,
+                Math.min(
+                    1,
+                    intensity
+                )
+            );
+
+
+        glow.style.opacity =
+            intensity;
+    }
+
+
+    /* ========================================
+       MOUNTAINS
     ======================================== */
 
     updateMountains(progress) {
 
         const far =
-            this.container.querySelector(
-                ".mountains-far"
-            );
+            this.container
+                .querySelector(
+                    ".mountains-far"
+                );
+
 
         const near =
-            this.container.querySelector(
-                ".mountains-near"
-            );
+            this.container
+                .querySelector(
+                    ".mountains-near"
+                );
+
 
         if (progress <= 0.5) {
 
             const amount =
                 progress / 0.5;
 
+
             far.style.background =
                 this.interpolateColor(
                     "#79a982",
-                    "#9c628a",
+                    "#996487",
                     amount
                 );
+
 
             near.style.background =
                 this.interpolateColor(
                     "#426b4b",
-                    "#5c405e",
+                    "#59405d",
                     amount
                 );
 
@@ -315,17 +529,19 @@ export default class SunsetScene {
             const amount =
                 (progress - 0.5) / 0.5;
 
+
             far.style.background =
                 this.interpolateColor(
-                    "#9c628a",
-                    "#20264d",
+                    "#996487",
+                    "#22284d",
                     amount
                 );
 
+
             near.style.background =
                 this.interpolateColor(
-                    "#5c405e",
-                    "#10152f",
+                    "#59405d",
+                    "#10152e",
                     amount
                 );
         }
@@ -333,80 +549,93 @@ export default class SunsetScene {
 
 
     /* ========================================
-       TERRENO
+       GROUND
     ======================================== */
 
     updateGround(progress) {
 
         const ground =
-            this.container.querySelector(
-                ".ground"
-            );
+            this.container
+                .querySelector(
+                    ".ground"
+                );
+
 
         ground.style.background =
             this.interpolateColor(
-                "#294632",
-                "#080c17",
+                "#193526",
+                "#04070d",
                 progress
             );
     }
 
 
     /* ========================================
-       ÁRBOLES
+       TREES
     ======================================== */
 
     updateTrees(progress) {
 
         const trees =
-            this.container.querySelectorAll(
-                ".tree"
-            );
+            this.container
+                .querySelectorAll(
+                    ".tree"
+                );
+
 
         const color =
             this.interpolateColor(
                 "#193526",
-                "#050810",
+                "#04070d",
                 progress
             );
 
-        trees.forEach(tree => {
 
-            tree.style.borderBottomColor =
-                color;
-        });
+        trees.forEach(
+            tree => {
+
+                tree.style
+                    .borderBottomColor =
+                    color;
+            }
+        );
     }
 
 
     /* ========================================
-       ESTRELLAS
+       STARS
     ======================================== */
 
     updateStars(progress) {
 
         if (!this.stars) return;
 
+
         /*
-         * Hasta 0.55 no hay estrellas.
-         *
-         * 0.55 → empiezan
-         *
-         * 1.0 → cielo lleno
+         * Comienzan a aparecer
+         * justo después del atardecer.
          */
 
         let opacity = 0;
 
-        if (progress > 0.55) {
+
+        if (progress > 0.52) {
 
             opacity =
-                (progress - 0.55) / 0.45;
+                (progress - 0.52)
+                / 0.48;
         }
+
 
         opacity =
             Math.max(
                 0,
-                Math.min(1, opacity)
+                Math.min(
+                    1,
+                    opacity
+                )
             );
+
 
         this.stars.style.opacity =
             opacity;
@@ -414,114 +643,239 @@ export default class SunsetScene {
 
 
     /* ========================================
-       SOL
+       SUN
     ======================================== */
 
-    updateSun(progress) {
+updateSun(progress) {
 
-        if (!this.sun) return;
+    if (!this.sun) return;
 
-        const sun =
-            this.sun.element;
+    const sun = this.sun.element;
 
+    /*
+     * ========================================
+     * DÍA
+     * ========================================
+     */
 
-        /*
-         * DÍA
-         */
+    if (progress < 0.32) {
 
-        if (progress < 0.25) {
+        const amount =
+            progress / 0.32;
 
-            sun.classList.remove(
-                "moon-mode"
+        sun.classList.remove("moon-mode");
+
+        sun.style.background =
+            this.interpolateColor(
+                "#ffd86b",
+                "#ffb347",
+                amount
             );
 
-            sun.style.background =
-                "#ffd86b";
+        sun.style.width = "64px";
+        sun.style.height = "64px";
 
-            sun.style.boxShadow = `
-                0 0 20px
-                rgba(255, 220, 120, 0.5)
-            `;
-        }
+        sun.style.boxShadow = `
+            0 0 25px
+            rgba(255, 220, 120, 0.55)
+        `;
+    }
 
+    /*
+     * ========================================
+     * ATARDECER
+     * ========================================
+     */
 
-        /*
-         * ATARDECER
-         */
+    else if (progress < 0.58) {
 
-        else if (progress < 0.35) {
+        const amount =
+            (progress - 0.32) / 0.26;
 
-            sun.classList.remove(
-                "moon-mode"
+        sun.classList.remove("moon-mode");
+
+        sun.style.background =
+            this.interpolateColor(
+                "#ffb347",
+                "#ff7043",
+                amount
             );
 
-            const amount =
-                (progress - 0.35) / 0.30;
+        /*
+         * El sol crece ligeramente
+         * durante el atardecer.
+         */
+        const size =
+            64 + amount * 10;
 
-            const color =
+        sun.style.width =
+            `${size}px`;
+
+        sun.style.height =
+            `${size}px`;
+
+        const glow =
+            25 + amount * 70;
+
+        sun.style.boxShadow = `
+            0 0 ${glow}px
+            rgba(255, 130, 70, 0.75)
+        `;
+    }
+
+    /*
+     * ========================================
+     * SOL → LUNA
+     * ========================================
+     */
+
+    else if (progress < 0.82) {
+
+        const amount =
+            (progress - 0.58) / 0.24;
+
+        sun.classList.remove("moon-mode");
+
+        /*
+         * Primero rojo → dorado.
+         */
+        let color;
+
+        if (amount < 0.45) {
+
+            const localAmount =
+                amount / 0.45;
+
+            color =
                 this.interpolateColor(
-                    "#ffba6b",
                     "#ff7043",
-                    amount
+                    "#e9b477",
+                    localAmount
                 );
 
-            sun.style.background =
-                color;
-
-            const glow =
-                20 + amount * 60;
-
-            sun.style.boxShadow = `
-                0 0 ${glow}px
-                rgba(252, 236, 53, 0.75)
-            `;
         }
-
-
-        else if (progress < 0.45) {
-
-            sun.classList.remove(
-                "moon-mode"
-            );
-
-            const amount =
-                (progress - 0.35) / 0.30;
-
-            const color =
-                this.interpolateColor(
-                    "#ff8e6b",
-                    "#ff7043",
-                    amount
-                );
-
-            sun.style.background =
-                color;
-
-            const glow =
-                30 + amount * 60;
-
-            sun.style.boxShadow = `
-                0 0 ${glow}px
-                rgba(250, 234, 13, 0.75)
-            `;
-        }
-
 
         /*
-         * NOCHE
+         * Después dorado → blanco lunar.
          */
-
         else {
 
-            sun.classList.add(
-                "moon-mode"
-            );
+            const localAmount =
+                (amount - 0.45) / 0.55;
+
+            color =
+                this.interpolateColor(
+                    "#e9b477",
+                    "#f4f1d0",
+                    localAmount
+                );
         }
+
+        sun.style.background =
+            color;
+
+        /*
+         * Aquí mantenemos el detalle
+         * que te gustó:
+         *
+         * 74px → 58px
+         */
+        const size =
+            74 - amount * 16;
+
+        sun.style.width =
+            `${size}px`;
+
+        sun.style.height =
+            `${size}px`;
+
+        /*
+         * El brillo naranja desaparece
+         * mientras aparece el brillo lunar.
+         */
+        const orangeOpacity =
+            1 - amount;
+
+        const orangeGlow =
+            70 * orangeOpacity;
+
+        const moonOpacity =
+            amount;
+
+        const moonGlow =
+            15 + amount * 30;
+
+        sun.style.boxShadow = `
+            0 0 ${orangeGlow}px
+            rgba(
+                255,
+                120,
+                60,
+                ${orangeOpacity}
+            ),
+
+            0 0 ${moonGlow}px
+            rgba(
+                255,
+                255,
+                220,
+                ${moonOpacity}
+            )
+        `;
     }
+
+    /*
+     * ========================================
+     * LUNA
+     * ========================================
+     */
+
+    else {
+
+        const amount =
+            (progress - 0.82) / 0.18;
+
+        sun.classList.add("moon-mode");
+
+        /*
+         * La luna termina ligeramente
+         * más pequeña que el sol.
+         */
+        const size =
+            58 - amount * 4;
+
+        sun.style.width =
+            `${size}px`;
+
+        sun.style.height =
+            `${size}px`;
+
+        const glow =
+            40 + amount * 20;
+
+        sun.style.boxShadow = `
+            0 0 ${glow}px
+            rgba(
+                255,
+                255,
+                220,
+                0.55
+            ),
+
+            0 0 ${glow * 2}px
+            rgba(
+                180,
+                200,
+                255,
+                0.18
+            )
+        `;
+    }
+}
 
 
     /* ========================================
-       COLOR
+       COLOR INTERPOLATION
     ======================================== */
 
     interpolateColor(
@@ -533,8 +887,12 @@ export default class SunsetScene {
         amount =
             Math.max(
                 0,
-                Math.min(1, amount)
+                Math.min(
+                    1,
+                    amount
+                )
             );
+
 
         const r1 =
             parseInt(
@@ -581,12 +939,14 @@ export default class SunsetScene {
                 amount
             );
 
+
         const g =
             Math.round(
                 g1 +
                 (g2 - g1) *
                 amount
             );
+
 
         const b =
             Math.round(
@@ -600,9 +960,14 @@ export default class SunsetScene {
     }
 
 
+    /* ========================================
+       DESTROY
+    ======================================== */
+
     destroy() {
 
         this.sun?.destroy();
+        this.camera?.destroy();
 
         this.container?.remove();
     }

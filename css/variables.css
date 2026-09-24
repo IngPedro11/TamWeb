@@ -1,50 +1,57 @@
 :root {
+
     /* =========================
-       CIELO
+       CIELO — DÍA
        ========================= */
 
-    --day-top: #5fc8ff;
-    --day-middle: #8edcff;
+    --day-top: #58c7ff;
+    --day-middle: #8bdcff;
     --day-bottom: #dff7ff;
-
-    --sunset-top: #5c5bb7;
-    --sunset-middle: #d56c9f;
-    --sunset-bottom: #ff9a55;
-
-    --night-top: #080b2a;
-    --night-middle: #121b45;
-    --night-bottom: #273b70;
 
 
     /* =========================
-       MONTAÑAS - DÍA
+       CIELO — ATARDECER
+       ========================= */
+
+    --sunset-top: #5553aa;
+    --sunset-middle: #c76a9f;
+    --sunset-bottom: #ff9857;
+
+
+    /* =========================
+       CIELO — NOCHE
+       ========================= */
+
+    --night-top: #070a25;
+    --night-middle: #111a40;
+    --night-bottom: #293d72;
+
+
+    /* =========================
+       MONTAÑAS
        ========================= */
 
     --mountain-far-day: #79a982;
+    --mountain-far-sunset: #996487;
+    --mountain-far-night: #22284d;
+
     --mountain-near-day: #426b4b;
-
-    /* =========================
-       MONTAÑAS - ATARDECER
-       ========================= */
-
-    --mountain-far-sunset: #9c628a;
-    --mountain-near-sunset: #5c405e;
-
-    /* =========================
-       MONTAÑAS - NOCHE
-       ========================= */
-
-    --mountain-far-night: #20264d;
-    --mountain-near-night: #10152f;
+    --mountain-near-sunset: #59405d;
+    --mountain-near-night: #10152e;
 
 
     /* =========================
-       TIERRA / ÁRBOLES
+       SUELO
        ========================= */
 
-    --ground-day: #294632;
-    --ground-night: #080c17;
+    --ground-day: #193526;
+    --ground-night: #04070d;
+
+
+    /* =========================
+       ÁRBOLES
+       ========================= */
 
     --tree-day: #193526;
-    --tree-night: #050810;
+    --tree-night: #04070d;
 }
