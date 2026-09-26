@@ -254,7 +254,13 @@ body {
         var(--ground-day);
 
     transition:
-        background 0.08s linear;
+        background 0.08s linear,
+        height 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.ground.rising {
+    height: 100%;
+    z-index: 500; /* pasa por encima de estrellas, cámara y todo lo demás */
 }
 
 
@@ -605,3 +611,4 @@ body {
             scale(1);
     }
 }
+

@@ -1,4 +1,3 @@
-
 import Sun from "../components/Sun.js";
 import CameraButton from "../components/CameraButton.js";
 import FlowerScene from "./FlowerScene.js";
@@ -79,11 +78,31 @@ correctPhoto() {
         "📸 ¡Perfecto!"
     );
 
+    /*
+     * En vez de cortar bruscamente a la
+     * siguiente escena, hacemos una
+     * transición cinematográfica:
+     *
+     * 1) Ocultamos la cámara.
+     * 2) Dejamos un instante para
+     *    apreciar el paisaje.
+     * 3) Una "cortina" oscura sube
+     *    cubriendo toda la pantalla.
+     * 4) Recién ahí cambiamos de escena.
+     */
+
     setTimeout(() => {
 
-        this.transitionToNextScene();
+        this.hideCameraUI();
 
-    }, 550);
+    }, 10000);
+
+
+    setTimeout(() => {
+
+        this.riseCurtainAndTransition();
+
+    }, 550 + 600);
 }
 
 
@@ -111,36 +130,62 @@ playCameraSound() {
 }
 
 
-transitionToNextScene() {
+/*
+ * Oculta suavemente el botón de cámara
+ * y cualquier mensaje/flash suyo, para
+ * que el paisaje quede completamente
+ * despejado antes de la transición.
+ */
+hideCameraUI() {
 
-    /*
-     * Creamos una capa blanca que
-     * cubre progresivamente la pantalla.
-     */
+    const cameraEl =
+        this.camera?.container;
 
-    const transition =
-        document.createElement("div");
+    if (!cameraEl) {
+        return;
+    }
 
-    transition.className =
-        "scene-transition";
+    cameraEl.style.transition =
+        "opacity 0.45s ease";
 
-    this.container.appendChild(
-        transition
-    );
+    cameraEl.style.opacity =
+        "0";
 
-    requestAnimationFrame(() => {
+    cameraEl.style.pointerEvents =
+        "none";
+}
 
-        transition.classList.add(
-            "active"
+
+/*
+ * Hace crecer el .ground real (que ya
+ * está oscuro en este punto del
+ * atardecer) hasta cubrir toda la
+ * pantalla. Como los árboles están
+ * anclados con bottom: 100% dentro
+ * del propio .ground, suben "montados"
+ * sobre él a medida que crece, sin
+ * deformarse. Cuando termina de subir,
+ * cambiamos a la escena de la flor
+ * (que ya arranca en negro/rojo oscuro,
+ * por lo que el corte es imperceptible).
+ */
+riseCurtainAndTransition() {
+
+    const ground =
+        this.container.querySelector(
+            ".ground"
         );
 
-    });
+    if (ground) {
 
-    /*
-     * Cuando la pantalla ya está
-     * completamente blanca,
-     * cambiamos de escena.
-     */
+        ground.classList.add(
+            "rising"
+        );
+    }
+
+
+    const RISE_DURATION =
+        1200;
 
     setTimeout(() => {
 
@@ -150,9 +195,8 @@ transitionToNextScene() {
             )
         );
 
-    }, 700);
+    }, RISE_DURATION);
 }
-
 
 
 wrongPhoto() {
