@@ -517,27 +517,27 @@ body {
 }
 
 .petal-core {
-    background: linear-gradient(to bottom, #52000c 0%, #350005 40%, #1a0002 75%, #080000 100%);
+    background: linear-gradient(to bottom, #be8800 0%, #350005 40%, #1a0002 75%, #9f7d0f 100%);
 }
 
 .petal-inner {
-    background: linear-gradient(to bottom, #6d0012 0%, #480008 40%, #250003 75%, #0c0000 100%);
+    background: linear-gradient(to bottom, #bc790d 0%, #480008 40%, #250003 75%, #0c0000 100%);
 }
 
 .petal-mid-inner {
-    background: linear-gradient(to bottom, #850018 0%, #5c000d 40%, #310004 75%, #120000 100%);
+    background: linear-gradient(to bottom, #c9841b 0%, #5c000d 40%, #310004 75%, #120000 100%);
 }
 
 .petal-mid {
-    background: linear-gradient(to bottom, #9a001d 0%, #6e0011 40%, #3b0005 75%, #160000 100%);
+    background: linear-gradient(to bottom, #d08b2b 0%, #6e0011 40%, #3b0005 75%, #160000 100%);
 }
 
 .petal-outer {
-    background: linear-gradient(to bottom, #ad0022 0%, #7e0014 40%, #440007 75%, #1a0001 100%);
+    background: linear-gradient(to bottom, #f3be39 0%, #7e0014 40%, #440007 75%, #1a0001 100%);
 }
 
 .petal-blush {
-    background: linear-gradient(to bottom, #bf0028 0%, #8e0018 40%, #4e0008 75%, #1e0001 100%);
+    background: linear-gradient(to bottom, #bf9c00 0%, #8e0018 40%, #4e0008 75%, #1e0001 100%);
 }
 
 

@@ -108,7 +108,7 @@ export default class FlowerScene {
                         disabled
                     >
                         <span class="btn-text">
-                            Ver sorpresa 🌹
+                            Ver sorpresa 
                         </span>
                         <span class="btn-shine"></span>
                     </button>
