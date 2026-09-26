@@ -2,6 +2,7 @@
 import Sun from "../components/Sun.js";
 import CameraButton from "../components/CameraButton.js";
 import FlowerScene from "./FlowerScene.js";
+import CatScene from "./CatScene.js";
 export default class SunsetScene {
 
     constructor(sceneManager) {
@@ -9,13 +10,12 @@ export default class SunsetScene {
         this.sceneManager = sceneManager;
 
         this.container = null;
-
         this.sun = null;
-
         this.stars = null;
         this.camera = null;
 
         this.wrongAttempts = 0;
+        this.isTransitioning = false;
     }
 
 
@@ -40,47 +40,30 @@ export default class SunsetScene {
 
 createCamera() {
 
-    this.camera =
-        new CameraButton(
-            this.container
-        );
+    this.camera = new CameraButton(
+        this.container
+    );
 
-    this.camera.onCapture =
-        () => {
+    this.camera.onCapture = () => {
 
-            const progress =
-                this.sun.progress;
+        const progress =
+            this.sun.progress;
 
-            /*
-             * Zona correcta:
-             *
-             * 0.45 ───────── 0.70
-             *
-             * Aquí consideramos que
-             * encontró el momento correcto.
-             */
+        if (
+            progress >= 0.45 &&
+            progress <= 0.70
+        ) {
 
-            if (
-                progress >= 0.43 &&
-                progress <= 0.63
-            ) {
+            this.correctPhoto();
 
-                this.correctPhoto();
+        } else {
 
-            } else {
-
-                this.wrongPhoto();
-            }
-        };
+            this.wrongPhoto();
+        }
+    };
 }
 
-
 correctPhoto() {
-
-    /*
-     * Evitamos que pueda pulsar el botón
-     * varias veces durante la transición.
-     */
 
     if (this.isTransitioning) {
         return;
@@ -88,30 +71,13 @@ correctPhoto() {
 
     this.isTransitioning = true;
 
-    /*
-     * 1. Sonido de cámara
-     */
-
     this.playCameraSound();
 
-    /*
-     * 2. Flash blanco
-     */
-
     this.camera.flash("white");
-
-    /*
-     * 3. Pequeño mensaje
-     */
 
     this.camera.showMessage(
         "📸 ¡Perfecto!"
     );
-
-    /*
-     * 4. Esperamos un poquito para
-     * que se sienta como una fotografía.
-     */
 
     setTimeout(() => {
 
@@ -191,106 +157,139 @@ transitionToNextScene() {
 
 wrongPhoto() {
 
+    if (this.isTransitioning) {
+        return;
+    }
+
     this.wrongAttempts++;
 
-    /*
-     * Flash rojo.
-     */
-
-    this.camera.flash(
-        "red"
-    );
+    this.camera.flash("red");
 
     let message;
 
-
-    /*
-     * PRIMER INTENTO
-     */
-
-    if (
-        this.wrongAttempts === 1
-    ) {
+    if (this.wrongAttempts === 1) {
 
         message =
             "hmm asi no 😌 intenta mover el sol";
 
+    } else if (this.wrongAttempts <= 3) {
 
-    /*
-     * INTENTOS 2-3
-     */
-
-    } else if (
-        this.wrongAttempts <= 3
-    ) {
         message =
             "Hey ya 😂 consejo: arrastra hasta donde mas te guste";
 
-
-
-    /*
-     * INTENTOS 4-5
-     */
-
-    } else if (
-        this.wrongAttempts <= 5
-    ) {
+    } else if (this.wrongAttempts <= 5) {
 
         message =
             "Así noooo 😩 tú no eres ella";
 
-
-    /*
-     * INTENTOS 6-8
-     */
-
-    } else if (
-        this.wrongAttempts <= 8
-    ) {
+    } else if (this.wrongAttempts <= 8) {
 
         message =
             "Bueno... ¿y cuál es la wachafita? 😭";
 
-
-    /*
-     * INTENTO 9
-     */
-
-    } else if (
-        this.wrongAttempts === 9
-    ) {
+    } else if (this.wrongAttempts === 9) {
 
         message =
             "Creo que el sol te está intentando decir algo... 🌅";
 
-
-    /*
-     * 10 O MÁS
-     */
-
-    } else if  (this.wrongAttempts === 10) {
+    } else if (this.wrongAttempts === 10) {
 
         message =
             "JAJAJA ya van 10, 10 veces gafa";
+
+    } else if (this.wrongAttempts <= 15) {
+
+        message =
+            "Te mereces un coquito";
+
+    } else {
+
+        message =
+            "el que se equivoque de nuevo es marico";
     }
-    else if  (this.wrongAttempts > 10 && this.wrongAttempts <= 15) {
 
-            message =
-                "Te mereces un coquito";
+    this.camera.showMessage(message);
+
+    // A las 50 equivocaciones aparece el gato marico
+    if (this.wrongAttempts >= 20) {
+
+        setTimeout(() => {
+
+            this.showCatScene();
+
+        }, 700);
     }
-    else if  (this.wrongAttempts > 15) {
+}
 
-            message =
-                "el que se equivoque de nuevo es marico";
+showCatScene() {
+
+    if (this.isTransitioning) {
+        return;
     }
 
+    this.isTransitioning = true;
 
-    this.camera.showMessage(
-        message
-    );
+    
+
+    const transition =
+        document.createElement("div");
+
+    transition.className =
+        "scene-transition";
+
+    const app =
+        document.getElementById("app");
+
+    app.appendChild(transition);
+
+    requestAnimationFrame(() => {
+
+        transition.classList.add(
+            "active"
+        );
+
+    });
+
+    setTimeout(() => {
+
+        this.sceneManager.changeTo(
+            new CatScene(
+                this.sceneManager
+            )
+        );
+
+        setTimeout(() => {
+
+            transition.classList.remove(
+                "active"
+            );
+
+            setTimeout(() => {
+
+                transition.remove();
+
+            }, 650);
+
+        }, 100);
+
+    }, 700);
+    this.playCatSound();
 }
 
 
+playCatSound() {
+
+    const audio =
+        new Audio(
+            "./assets/audio/cat-laugh-meme-1.mp3"
+        );
+
+    audio.volume = 0.8;
+
+    audio.currentTime = 0;
+
+    audio.play().catch(() => {});
+}
 
 
     /* ========================================
