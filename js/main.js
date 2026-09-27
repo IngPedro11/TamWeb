@@ -1,25 +1,32 @@
-console.log("A - MAIN");
-
 import SceneManager from "./core/SceneManager.js";
-
-console.log("B - SceneManager importado");
-
+import MemoryManager from "./core/MemoryManager.js";
 import SunsetScene from "./scenes/SunsetScene.js";
 
-console.log("C - SunsetScene importado");
+console.log("A - Módulos importados");
 
-const app = document.getElementById("app");
+const app =
+    document.getElementById("app");
 
-console.log("D - App encontrada", app);
+console.log("B - App encontrada", app);
 
-const sceneManager = new SceneManager(app);
+const sceneManager =
+    new SceneManager(app);
 
-console.log("E - SceneManager creado");
+console.log("C - SceneManager creado");
 
-const scene = new SunsetScene(sceneManager);
+const memoryManager =
+    new MemoryManager();
 
-console.log("F - SunsetScene creado");
+console.log("D - MemoryManager creado");
+
+const scene =
+    new SunsetScene(
+        sceneManager,
+        memoryManager
+    );
+
+console.log("E - SunsetScene creado");
 
 sceneManager.start(scene);
 
-console.log("G - Scene iniciado");
+console.log("F - Escena iniciada");

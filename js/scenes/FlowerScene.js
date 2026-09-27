@@ -1,9 +1,17 @@
+import BirthdayCard from "../components/BirthdayCard.js";
+
 export default class FlowerScene {
 
-    constructor(sceneManager) {
-
+    constructor(
+        sceneManager,
+        memoryManager
+    ) {
         this.sceneManager =
             sceneManager;
+
+        this.memoryManager =
+            memoryManager;
+        this.birthdayCard = null;
 
         this.container = null;
 
@@ -31,24 +39,18 @@ export default class FlowerScene {
     }
 
 
-    start() {
+start() {
 
-        this.createScene();
+    this.createScene();
 
-        this.createSepals();
+    this.createSepals();
 
-        this.createPetals();
+    this.createPetals();
 
-        this.setupButton();
-    }
+    this.setupButton();
+}
 
 
-    /*
-     * ¡IMPORTANTE!
-     * Este markup usa las mismas clases/IDs que el CSS
-     * "bueno" (glass-card, trigger-overlay, scene, rose-wrapper...),
-     * NO las clases flower-* del CSS bugeado.
-     */
     createScene() {
 
         this.container =
@@ -525,7 +527,6 @@ export default class FlowerScene {
 
         this.bloom();
 
-
         setTimeout(() => {
 
             const wrapper =
@@ -559,6 +560,12 @@ export default class FlowerScene {
             );
 
         }, 4600);
+        setTimeout(() => {
+
+            this.showFinalMessage();
+
+        }, 6200);
+
     }
 
 
@@ -874,7 +881,479 @@ export default class FlowerScene {
                 null;
         }
 
+        this.birthdayCard?.destroy();
 
         this.container?.remove();
     }
+
+    showFinalMessage() {
+
+        const endText =
+            this.container.querySelector("#endText");
+
+        endText.innerHTML = `
+            <p class="final-name">
+                Tammy ❤️
+            </p>
+
+            <h2 class="final-title">
+                Feliz cumpleaños.
+            </h2>
+
+            <p class="final-message">
+                Espero que este pequeño recuerdo
+                te saque una sonrisa cada vez
+                que lo vuelvas a ver.
+            </p>
+
+            <p class="final-signature">
+                — Pedro 🌹
+            </p>
+
+            <button
+                class="memory-button"
+                id="memoryButton"
+                type="button"
+            >
+                💌 Obtener recuerdito
+            </button>
+
+            <div
+                class="memory-status"
+                id="memoryStatus"
+            ></div>
+        `;
+
+        endText.classList.add("visible");
+
+        const button =
+            this.container.querySelector("#memoryButton");
+
+        const status =
+            this.container.querySelector("#memoryStatus");
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                button.disabled = true;
+
+                button.textContent =
+                    "✨ Preparando tu recuerdito...";
+
+                status.textContent =
+                    "Guardando ese atardecer ❤️";
+
+                try {
+
+                    await this.generateBirthdayMemory();
+
+                    button.textContent =
+                        "💌 Recuerdito guardado";
+
+                    status.textContent =
+                        "Para ti, Tammy 🌹";
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    button.disabled = false;
+
+                    button.textContent =
+                        "💌 Obtener recuerdito";
+
+                    status.textContent =
+                        "No pude guardarlo. Inténtalo otra vez.";
+                }
+            }
+        );
+    }
+
+    async generateBirthdayMemory() {
+
+        const imageData =
+            this.memoryManager.getSunsetImage();
+
+        if (!imageData) {
+
+            throw new Error(
+                "No existe una captura del atardecer."
+            );
+        }
+
+        const image =
+            await this.loadImage(imageData);
+
+        const width = 1080;
+        const height = 1920;
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx =
+            canvas.getContext("2d");
+
+        // Fondo
+        const background =
+            ctx.createLinearGradient(
+                0,
+                0,
+                0,
+                height
+            );
+
+        background.addColorStop(
+            0,
+            "#16040b"
+        );
+
+        background.addColorStop(
+            0.55,
+            "#260914"
+        );
+
+        background.addColorStop(
+            1,
+            "#050205"
+        );
+
+        ctx.fillStyle = background;
+
+        ctx.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+        /*
+        * ATARDECER
+        *
+        * Usamos la imagen completa que capturamos
+        * en SunsetScene.
+        */
+
+        const imageHeight = 920;
+
+        this.drawCoverImage(
+            ctx,
+            image,
+            0,
+            0,
+            width,
+            imageHeight
+        );
+
+        // Degradado sobre el atardecer
+        const shade =
+            ctx.createLinearGradient(
+                0,
+                300,
+                0,
+                imageHeight
+            );
+
+        shade.addColorStop(
+            0,
+            "rgba(10,0,5,0)"
+        );
+
+        shade.addColorStop(
+            0.55,
+            "rgba(10,0,5,0.08)"
+        );
+
+        shade.addColorStop(
+            1,
+            "rgba(10,0,5,0.95)"
+        );
+
+        ctx.fillStyle = shade;
+
+        ctx.fillRect(
+            0,
+            0,
+            width,
+            imageHeight
+        );
+
+        ctx.textAlign = "center";
+
+        // Nombre
+        ctx.font =
+            '42px Georgia, "Times New Roman", serif';
+
+        ctx.fillStyle =
+            "#f3c5d2";
+
+        ctx.fillText(
+            "Tammy ❤️",
+            width / 2,
+            1080
+        );
+
+        // Título
+        ctx.font =
+            'bold 76px Georgia, "Times New Roman", serif';
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.fillText(
+            "Feliz cumpleaños.",
+            width / 2,
+            1190
+        );
+
+        // Mensaje principal
+        ctx.font =
+            'italic 42px Georgia, "Times New Roman", serif';
+
+        ctx.fillStyle =
+            "#f4dce3";
+
+        this.drawWrappedText(
+            ctx,
+            "De todos los atardeceres que existen, quería que le tomaras foto a este.",
+            width / 2,
+            1300,
+            820,
+            62
+        );
+
+        // Mensaje final
+        ctx.font =
+            '32px Arial, sans-serif';
+
+        ctx.fillStyle =
+            "rgba(255,255,255,0.78)";
+
+        this.drawWrappedText(
+            ctx,
+            "Espero que este pequeño recuerdo te saque una sonrisa cada vez que lo vuelvas a ver.",
+            width / 2,
+            1480,
+            800,
+            48
+        );
+
+        // Línea
+        ctx.beginPath();
+
+        ctx.moveTo(
+            420,
+            1650
+        );
+
+        ctx.lineTo(
+            660,
+            1650
+        );
+
+        ctx.strokeStyle =
+            "rgba(255,190,210,0.5)";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+        // Firma
+        ctx.font =
+            'italic 36px Georgia, "Times New Roman", serif';
+
+        ctx.fillStyle =
+            "#f3c5d2";
+
+        ctx.fillText(
+            "— Pedro 🌹",
+            width / 2,
+            1730
+        );
+
+        // Pequeño detalle
+        ctx.font =
+            '28px Georgia, "Times New Roman", serif';
+
+        ctx.fillStyle =
+            "rgba(255,255,255,0.5)";
+
+        ctx.fillText(
+            "✦",
+            width / 2,
+            1810
+        );
+
+        // Descargar
+        const link =
+            document.createElement("a");
+
+        link.download =
+            "Para_Tammy_Feliz_Cumpleanos.png";
+
+        link.href =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+    }
+
+    loadImage(src) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            const image =
+                new Image();
+
+            image.onload = () =>
+                resolve(image);
+
+            image.onerror = () =>
+                reject(
+                    new Error(
+                        "No se pudo cargar el atardecer."
+                    )
+                );
+
+            image.src = src;
+        }
+    );
 }
+drawCoverImage(
+    ctx,
+    image,
+    x,
+    y,
+    width,
+    height
+) {
+
+    const imageRatio =
+        image.width /
+        image.height;
+
+    const targetRatio =
+        width /
+        height;
+
+    let sourceWidth =
+        image.width;
+
+    let sourceHeight =
+        image.height;
+
+    let sourceX = 0;
+    let sourceY = 0;
+
+    if (
+        imageRatio >
+        targetRatio
+    ) {
+
+        sourceWidth =
+            image.height *
+            targetRatio;
+
+        sourceX =
+            (
+                image.width -
+                sourceWidth
+            ) / 2;
+
+    } else {
+
+        sourceHeight =
+            image.width /
+            targetRatio;
+
+        sourceY =
+            (
+                image.height -
+                sourceHeight
+            ) / 2;
+    }
+
+    ctx.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        x,
+        y,
+        width,
+        height
+    );
+}
+
+drawWrappedText(
+    ctx,
+    text,
+    centerX,
+    startY,
+    maxWidth,
+    lineHeight
+) {
+
+    const words =
+        text.split(" ");
+
+    const lines = [];
+
+    let line = "";
+
+    words.forEach(word => {
+
+        const testLine =
+            line
+                ? `${line} ${word}`
+                : word;
+
+        const width =
+            ctx.measureText(
+                testLine
+            ).width;
+
+        if (
+            width > maxWidth &&
+            line
+        ) {
+
+            lines.push(line);
+
+            line = word;
+
+        } else {
+
+            line = testLine;
+        }
+    });
+
+    if (line) {
+        lines.push(line);
+    }
+
+    lines.forEach(
+        (currentLine, index) => {
+
+            ctx.fillText(
+                currentLine,
+                centerX,
+                startY +
+                index * lineHeight
+            );
+        }
+    );
+}
+
+}
+

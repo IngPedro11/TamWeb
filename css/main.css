@@ -612,3 +612,175 @@ body {
     }
 }
 
+/* ========================================
+   FINAL BIRTHDAY MESSAGE
+======================================== */
+
+.end-text {
+    position: absolute;
+    left: 50%;
+    bottom: 6%;
+    transform:
+        translateX(-50%)
+        translateY(30px);
+
+    width: min(88vw, 390px);
+
+    text-align: center;
+
+    opacity: 0;
+
+    z-index: 80;
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+
+    pointer-events: none;
+}
+
+.end-text.visible {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+    pointer-events: auto;
+}
+
+.final-name {
+    margin: 0 0 6px;
+
+    color: #f3b8ca;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 19px;
+
+    letter-spacing: 0.4px;
+}
+
+.final-title {
+    margin: 0 0 12px;
+
+    color: white;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 30px;
+
+    font-weight: 500;
+}
+
+.final-message {
+    margin: 0 auto 10px;
+
+    max-width: 330px;
+
+    color:
+        rgba(255,255,255,0.78);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 15px;
+
+    line-height: 1.55;
+}
+
+.final-signature {
+    margin: 0 0 18px;
+
+    color: #efb5c7;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 16px;
+
+    font-style: italic;
+}
+
+.memory-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 220px;
+    min-height: 50px;
+
+    padding: 0 24px;
+
+    border: 1px solid
+        rgba(255,190,210,0.35);
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(145,25,65,0.95),
+            rgba(75,8,32,0.98)
+        );
+
+    color: white;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 35px
+        rgba(120,20,60,0.3);
+
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease,
+        opacity 0.2s ease;
+
+    -webkit-tap-highlight-color:
+        transparent;
+}
+
+.memory-button:active {
+    transform: scale(0.95);
+}
+
+.memory-button:hover {
+    filter: brightness(1.12);
+}
+
+.memory-button:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.memory-status {
+    min-height: 18px;
+
+    margin-top: 9px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 12px;
+}

@@ -4,18 +4,23 @@ import FlowerScene from "./FlowerScene.js";
 import CatScene from "./CatScene.js";
 export default class SunsetScene {
 
-    constructor(sceneManager) {
+constructor(
+    sceneManager,
+    memoryManager
+) {
+    this.sceneManager =
+        sceneManager;
 
-        this.sceneManager = sceneManager;
+    this.memoryManager =
+        memoryManager;
 
-        this.container = null;
-        this.sun = null;
-        this.stars = null;
-        this.camera = null;
-
-        this.wrongAttempts = 0;
-        this.isTransitioning = false;
-    }
+    this.container = null;
+    this.sun = null;
+    this.stars = null;
+    this.camera = null;
+    this.wrongAttempts = 0;
+    this.isTransitioning = false;
+}
 
 
     /* ========================================
@@ -62,7 +67,173 @@ createCamera() {
     };
 }
 
-correctPhoto() {
+async captureSunset() {
+
+    if (!this.container) {
+        throw new Error(
+            "No existe el contenedor del atardecer."
+        );
+    }
+
+    if (
+        typeof html2canvas ===
+        "undefined"
+    ) {
+        throw new Error(
+            "html2canvas no está disponible."
+        );
+    }
+
+    try {
+
+        /*
+         * Guardamos los datos del momento
+         * en que Tammy tomó la foto.
+         */
+        this.memoryManager.saveSunset({
+
+            sunProgress:
+                this.sun.progress,
+
+            capturedAt:
+                Date.now()
+
+        });
+
+        /*
+         * Ocultamos temporalmente
+         * la interfaz de cámara.
+         */
+        const cameraUI =
+            this.container.querySelector(
+                ".camera-ui"
+            );
+
+        if (cameraUI) {
+            cameraUI.style.visibility =
+                "hidden";
+        }
+
+        /*
+         * Capturamos solamente
+         * el paisaje.
+         */
+    const canvas =
+        await html2canvas(
+            this.container,
+            {
+                backgroundColor: null,
+                scale: Math.min(2, window.devicePixelRatio || 1),
+                useCORS: true,
+                allowTaint: false,
+                logging: false,
+                foreignObjectRendering: true, // 👈 agrega esta línea
+                width: this.container.clientWidth,
+                height: this.container.clientHeight,
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight
+            }
+        );
+
+        /*
+         * Volvemos a mostrar
+         * la cámara por seguridad.
+         */
+        if (cameraUI) {
+            cameraUI.style.visibility =
+                "";
+        }
+
+        /*
+         * Convertimos el canvas
+         * en una imagen PNG.
+         */
+
+        console.log("Canvas width/height:", canvas.width, canvas.height);
+
+        const ctx2d = canvas.getContext("2d");
+        const pixel = ctx2d.getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data;
+        console.log("Pixel central RGBA:", pixel);
+        const imageData =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+        /*
+         * Guardamos la imagen
+         * en MemoryManager.
+         */
+        this.memoryManager.saveSunsetImage(
+            imageData
+        );
+
+        console.log(
+            "🌅 ATARDECER CAPTURADO"
+        );
+
+        console.log(
+            "Tamaño:",
+            canvas.width,
+            "x",
+            canvas.height
+        );
+
+        console.log(
+            "Imagen guardada:",
+            imageData.substring(0, 50)
+        );
+
+        return imageData;
+
+    } catch (error) {
+
+        console.error(
+            "❌ Error capturando el atardecer:",
+            error
+        );
+
+        /*
+         * Si algo falla,
+         * volvemos a mostrar la cámara.
+         */
+        const cameraUI =
+            this.container.querySelector(
+                ".camera-ui"
+            );
+
+        if (cameraUI) {
+            cameraUI.style.visibility =
+                "";
+        }
+
+        throw error;
+    }
+}
+
+
+
+/*
+ * Toda la secuencia de "foto correcta"
+ * como UNA sola cadena async/await.
+ *
+ * Antes esto estaba armado con dos
+ * setTimeout independientes (uno para
+ * ocultar la cámara + capturar, otro
+ * para la cortina), y no había ninguna
+ * garantía de que terminaran en orden:
+ * si html2canvas tardaba un poco más
+ * de lo esperado, la cortina podía
+ * empezar a subir ANTES de que la
+ * captura terminara, arruinando la foto
+ * guardada (o guardándola directamente
+ * en negro).
+ *
+ * Ahora cada paso espera al anterior,
+ * así que el orden queda garantizado
+ * pase lo que pase con la duración
+ * real de la captura.
+ */
+async correctPhoto() {
 
     if (this.isTransitioning) {
         return;
@@ -70,39 +241,88 @@ correctPhoto() {
 
     this.isTransitioning = true;
 
+
+    /*
+     * Sonido de cámara
+     */
     this.playCameraSound();
 
+
+    /*
+     * Flash
+     */
     this.camera.flash("white");
 
+
+    /*
+     * Mensaje
+     */
     this.camera.showMessage(
         "📸 ¡Perfecto!"
     );
 
+
     /*
-     * En vez de cortar bruscamente a la
-     * siguiente escena, hacemos una
-     * transición cinematográfica:
-     *
-     * 1) Ocultamos la cámara.
-     * 2) Dejamos un instante para
-     *    apreciar el paisaje.
-     * 3) Una "cortina" oscura sube
-     *    cubriendo toda la pantalla.
-     * 4) Recién ahí cambiamos de escena.
+     * Dejamos que se vea el flash.
      */
+    await new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                120
+            )
+    );
 
-    setTimeout(() => {
 
-        this.hideCameraUI();
+    /*
+     * Ocultamos la interfaz.
+     */
+this.hideCameraUI();
 
-    }, 10000);
+await new Promise(
+    resolve =>
+        requestAnimationFrame(resolve)
+);
+
+const image =
+    await this.captureSunset();
 
 
-    setTimeout(() => {
+    if (!image) {
 
-        this.riseCurtainAndTransition();
+        console.error(
+            "La captura del atardecer falló."
+        );
 
-    }, 550 + 600);
+        this.isTransitioning =
+            false;
+
+        return;
+    }
+
+
+    console.log(
+        "📸 Foto guardada:",
+        image.substring(0, 40)
+    );
+
+
+    /*
+     * Ahora sí podemos pasar a la rosa.
+     */
+    this.riseCurtainAndTransition();
+}
+
+
+delay(ms) {
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
 }
 
 
@@ -139,7 +359,7 @@ playCameraSound() {
 hideCameraUI() {
 
     const cameraEl =
-        this.camera?.container;
+        this.camera?.element; // ✅ el div .camera-ui real, no el paisaje
 
     if (!cameraEl) {
         return;
@@ -191,7 +411,8 @@ riseCurtainAndTransition() {
 
         this.sceneManager.changeTo(
             new FlowerScene(
-                this.sceneManager
+                this.sceneManager,
+                this.memoryManager
             )
         );
 
